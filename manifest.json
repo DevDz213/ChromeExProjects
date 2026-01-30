@@ -4,6 +4,12 @@
   "version": "1.0",
   "permissions": ["tabs", "activeTab", "scripting"],
   "manifest_version": 3,
+  "host_permissions": [
+    "http://localhost:5000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": "popup/hello_extensions.png"
