@@ -1,0 +1,23 @@
+{
+  "name": "Ask Chatgpt anything",
+  "description": "Google Extension that prompts current Chatgpt tab and collect the answer.",
+  "version": "1.0",
+  "permissions": ["tabs", "activeTab", "scripting"],
+  "manifest_version": 3,
+  "host_permissions": [
+    "https://chatgpt.com/c/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {}
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*"],
+      "js": ["content/content.js"]
+    }
+  ]
+}

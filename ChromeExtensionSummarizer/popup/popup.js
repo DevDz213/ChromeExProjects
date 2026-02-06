@@ -31,10 +31,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   summarizeBtn.addEventListener("click", () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      console.log("Sending message to content script");
+      summarizeBtn.textContent = "Summarizing...";
       chrome.tabs.sendMessage(
         tabs[0].id,
         { type: "GET_PAGE_TEXT" },
         (response) => {
+          console.log("Received response from content script");
+          if (chrome.runtime.lastError) {
+            console.error("Error sending message:", chrome.runtime.lastError.message);
+            return;
+          }
+          if (!response || !response.text) {
+            console.warn("No text received from content script");
+            return;
+          }
           // Call Flask backend
           fetch('http://localhost:5000/summarize', {
               method: 'POST',
@@ -44,9 +55,14 @@ document.addEventListener("DOMContentLoaded", () => {
           .then(response => response.json())
           .then(data => displaySummary(data.summary))
           .catch(error => console.log("Error:", error.message));
+
+          summarizeBtn.disable = true;
+          summarizeBtn.textContent = "Here is the summary!";
+          
+
           return true; // Keep channel open for async response
         }
       );
     });
-  });
+  }, { once: true });
 });
