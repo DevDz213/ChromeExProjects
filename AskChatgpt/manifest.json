@@ -17,7 +17,15 @@
   "content_scripts": [
     {
       "matches": ["https://chatgpt.com/*"],
-      "js": ["content/content.js"]
+      "js": ["content/manipulateChat.js"]
+    },
+    {
+      "matches": ["https://laruche.polymtl.ca/sp/ssp/r/etudiant/recherche-de-mandats*"],
+      "js": ["content/posteStageManager.js"]
+    },
+    {
+      "matches": ["https://laruche.polymtl.ca/sp/ssp/r/etudiant/detail-mandat*"],
+      "js": ["content/detailMandatManager.js"]
     }
   ]
 }

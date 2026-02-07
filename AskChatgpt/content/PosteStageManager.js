@@ -1,38 +1,36 @@
 console.log("Prêt à ramasser les stages!");
 
+
 const JOB_OFFER_TABLE = document.getElementById("mad_data_panel")
-                                .querySelector('table');
-let jobOfferRows = Array.from(JOB_OFFER_TABLE.querySelectorAll('tbody tr'));
-let currentJobIndex = 1;
+                            .querySelector('div.t-fht-tbody')
+                            .querySelector('table');
+
+const jobOfferRows = Array.from(JOB_OFFER_TABLE.querySelectorAll('tbody tr'));
+
+let currentJobIndex = 1; // skip header row
 let jobNumber = jobOfferRows.length;
+console.log("Initialized:", { currentJobIndex, jobNumber });
 
 
-// Attendre que la page soit chargée
-document.addEventListener('DOMContentLoaded', () => {
-  // Stocker les références
-  myButton = document.querySelector('#my-button');
-  fileInput = document.querySelector('input[type="file"]');
-  textArea = document.querySelector('textarea');
-  
-  console.log('Références stockées:', myButton, fileInput);
-  
-  // Maintenant tu peux les utiliser partout
-  myButton.addEventListener('click', handleClick);
-});
+function getNextJobRef() {
+    const jobRow = jobOfferRows[currentJobIndex];
+    const jobLink = jobRow.querySelector('td:nth-child(3) a');
+
+    currentJobIndex++;
+    return jobLink.href;
+}
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "GET_NEXT_JOB") {
-        console.log("Message GET_NEXT_JOB reçu dans PosteStageManager.js");
         
-        if (currentJobIndex > jobNumber) {
+        if (currentJobIndex === jobNumber) {
+            console.log("Aucun autre poste disponible.");
             sendResponse({ type: "NO_MORE_JOBS" });
             return;
         } 
 
-        const jobRow = jobOfferRows[currentJobIndex];
-        const jobLink = jobRow.querySelector('td:nth-child(2) a');
-        currentJobIndex++;
-        sendResponse({ type: "JOB_INFO", link: jobLink.href });
+        sendResponse({ type: "JOB_INFO", link: getNextJobRef() });
+        return;
     }
 });
         

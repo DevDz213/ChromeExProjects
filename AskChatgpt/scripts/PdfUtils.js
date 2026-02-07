@@ -1,4 +1,4 @@
-export function generateCoverLetter(bodyText, poste) {
+export function generateCoverLetter(bodyText) {
     const { jsPDF } = window.jspdf || window.jsPDF || {};
     if (!jsPDF) {
         console.log('jsPDF not found - ensure jspdf.umd.min.js is loaded before PdfUtils.js');

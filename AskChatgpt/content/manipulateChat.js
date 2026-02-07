@@ -1,4 +1,4 @@
-console.log("Content.js lil nigga loaded");
+console.log("Prêt à manipuler ChatGPT!");
 
 function cutText(text, startSub, endSub) {
     const startIndex = text.indexOf(startSub);
