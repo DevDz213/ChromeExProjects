@@ -43,6 +43,14 @@ relevé, avant de cliquer sur postuler, fermer la page et passer au poste suivan
 
 > **Note :** L'extension fonctionne également sur Chrome en suivant les mêmes étapes sur `chrome://extensions/`
 
+
+## Subtilité dans le code
+
+### Ajout du CV personnel dans le répertoire
+Ajoutez votre CV à la racine de l'extension, au même niveau que le manifest.json. Il faut aussi modifier une ligne de code dans le fichier popup/popup.js afin de sauvegarder le bon pdf dans votre navigateur.
+![image](Img/2.png)
+
+
 ## ⚙️ Configuration des onglets
 
 ### Première utilisation
@@ -61,8 +69,20 @@ sinon clickez sur l'icone de puzzle et épinglez l'extension.
 **Préparer l'onglet ChatGpt**
 - Ouvrez une nouvelle fenêtre (⚠️pas onglet!) et accédez à une conversation sur votre compte
 - Préparez le contexte pour que chat puisse recevoir des offres et formuler une lettre de motivation
+- ⚠️⚠️⚠️ UNE SEULE PAGE CHATGPT OUVERTE. => Sinon ChromeAPI ne sait pas où envoyer les prompts.
 
 ![Fenetres Depart](Img/1.png)
+
+
+**Ouvrez la console de l'extension afin de suivre l'activité du programme et repérer les erreurs et les arrêts de programme**
+
+L'extension comporte encore plusieurs bugs, mais, rassurez vous, cela arrête le programme et les postulations. En cas d'arrêt, recliquez sur l'extension et, si besoin, rechargez toutes les pages et asurez-vous d'avoir une instance de chaque onglet.
+ - Clic droit sur le popup de l'extension et inspect
+ - Ouvrez la console du popup
+
+![Popup](Img/3.png)
+
+![Console](Img/4.png)
 
 ## 🐛 Bugs courants et solutions
 
@@ -99,18 +119,12 @@ sinon clickez sur l'icone de puzzle et épinglez l'extension.
 - Cliquez sur l'icône Extensions (puzzle) dans la barre d'outils
 - Cliquez sur l'icône "pin" à côté du nom de l'extension
 
-### 5. [Autre bug spécifique]
-
-**Cause :** [Description]
-
-**Solution :**
-- [Étapes de résolution]
 
 ## 📝 Notes importantes
 
-- L'extension nécessite une connexion internet pour [fonctionnalité]
-- Certaines pages web peuvent bloquer l'extension pour des raisons de sécurité
-- Les données sont stockées localement dans votre navigateur
+- Il est très important que la page de ChatGpt ne soit pas dans la même fenêtre. Chrome allouera plus de ressources pour générer les lettres de motivation, qui est l'étape la plus longue du processus.
+- Il est possible de rencontrer des bug inconnus, cherchez sur internet ou venez me voir.
+- N'oubliez pas de clean up vos téléchargements (beaucoup de lettres de motivations seront générées).
 
 ## 🤝 Contribution
 
