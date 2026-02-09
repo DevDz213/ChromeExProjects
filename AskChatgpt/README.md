@@ -53,6 +53,10 @@ Ajoutez votre CV à la racine de l'extension, au même niveau que le **manifest.
 ### Formatage de la lettre de motivation générée
 J'ai laissé mon nom pour tronquer la réponse de chatgpt, ainsi que pour le formattage de la lettre de motivation. Il faut donc modifier ces lignes dans les fichiers **Script.PdfUtils.js** et **content/manipulateChat.js**
 
+![code2](Img/6.png)
+
+![code3](Img/7.png)
+
 ## ⚙️ Configuration des onglets
 
 ### Première utilisation
