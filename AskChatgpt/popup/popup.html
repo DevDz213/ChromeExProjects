@@ -6,7 +6,17 @@
 </head>
 <body>
   <h1>You applied for : <span id="applicationCount">0</span> jobs</h1>
-  <button id="askButton">Auto Apply</button>
+  <form id="applyForm" enctype="multipart/form-data">
+    <div class="input-row">
+      <label for="fullName">Full Name:</label>
+      <input type="text" id="fullName" name="fullName" placeholder="Your full name" required />
+    </div>
+    <div class="input-row">
+      <label for="resumeFile">Upload Your CV (PDF only):</label>
+      <input type="file" id="resumeFile" name="resumeFile" accept=".pdf" required />
+    </div>
+    <button type="submit" id="askButton">Auto Apply</button>
+  </form>
   <h1>Applications done : </h1>
   <ul id="jobAppliedList"></ul>
   <script src="../node_modules/jspdf/dist/jspdf.umd.min.js"></script>

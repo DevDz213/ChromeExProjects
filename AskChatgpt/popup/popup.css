@@ -1,36 +1,114 @@
+:root{
+  --bg-1: #f8fafc;
+  --bg-2: #eef2ff;
+  --card: #ffffff;
+  --primary: #2563eb;
+  --primary-600: #1e40af;
+  --muted: #6b7280;
+  --radius: 10px;
+  --shadow: 0 6px 18px rgba(16,24,40,0.08);
+}
+
+*{box-sizing: border-box}
+
 body {
-  width: 300px;
-  padding: 30px 24px;
+  width: 360px;
+  padding: 16px;
   margin: 0;
-  font-family: sans-serif;
-  background-color: #f5f5f5;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg,var(--bg-1),var(--bg-2));
+  color: #0f172a;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
 }
 
 h1 {
-  font-size: 20px;
-  color: #1a1a1a;
-  margin: 0 0 20px 0;
+  font-size: 15px;
+  color: #0b1220;
+  margin: 0 0 12px 0;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-button {
+#applicationCount{
+  background: var(--primary);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.input-row{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+label{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+input[type="text"],
+input[type="file"]{
   width: 100%;
-  padding: 10px 0;
-  margin-bottom: 30px;
-  background-color: #4a90e2;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e6e9ef;
+  background: var(--card);
+  font-size: 14px;
+  color: #0b1220;
+  outline: none;
+}
+
+input[type="text"]:focus{
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.06);
+  border-color: var(--primary-600);
+}
+
+/* style file input to look consistent */
+input[type="file"]{
+  padding: 8px 10px;
+}
+
+button{
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 6px;
+  background-color: var(--primary);
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 15px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: var(--shadow);
 }
 
-button:hover {
-  background-color: #357abd;
+button:hover{ background-color: var(--primary-600) }
+
+/* Applications list */
+ul#jobAppliedList{
+  list-style: none;
+  padding: 8px 0 0 0;
+  margin: 8px 0 0 0;
+  max-height: 160px;
+  overflow: auto;
+  width: 100%;
 }
 
-button:active {
-  background-color: #2a6099;
+ul#jobAppliedList li{
+  background: var(--card);
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #eef2f7;
+  font-size: 13px;
+  color: #0b1220;
 }
+

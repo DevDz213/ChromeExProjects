@@ -1,0 +1,21 @@
+const applyForm = document.getElementById("applyForm");
+    if (applyForm) {
+        applyForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const fullNameEl = document.getElementById("fullName");
+            const resumeEl = document.getElementById("resumeFile");
+            const fullName = fullNameEl ? fullNameEl.value.trim() : "";
+            const file = resumeEl && resumeEl.files && resumeEl.files[0] ? resumeEl.files[0] : null;
+            console.log("Form submitted:", {
+                fullName,
+                file: file ? { name: file.name, size: file.size, type: file.type } : null,
+            });
+
+            if (file) {
+               const tempUrl = URL.createObjectURL(file)
+               console.log("URL crée :", tempUrl)
+               window.open(tempUrl, '_blank');
+            }
+            
+        });
+    }
