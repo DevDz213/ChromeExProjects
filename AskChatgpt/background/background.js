@@ -49,17 +49,14 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             }
 
             try {
-                const fileUrl = result.savedCvPath;
-                console.log("Lecture du CV à partir du chemin:", fileUrl);
-                // Convert Windows path to file:// URL (C:\... -> file:///C:/...)
-                const response = await fetch(fileUrl);
-                console.log("Fetch CV réussit");
-                const blob = await response.blob();
-                const arrayBuffer = await blob.arrayBuffer();
-                console.log("CV lu avec succès, envoi des données au content script.", { size: arrayBuffer.byteLength });
+                const result = await chrome.storage.local.get(['savedCvData', 'savedCvType', 'fullName']);
+                
+                console.log("CV lu avec succès, envoi des données au content script.", { size: result.savedCvData.length });
+                
                 sendResponse({
-                    filename: fileUrl.split("\\").pop(),
-                    data: Array.from(new Uint8Array(arrayBuffer))
+                    filename: `CV_${result.fullName}.pdf`,
+                    data: result.savedCvData,
+                    type: result.savedCvType
                 });
             } catch (error) {
                 console.error("Erreur lors de la lecture du CV:", error);
@@ -70,12 +67,20 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         return true;
     }
 
-    if (msg.type === "SAVE_CV_PATH") {
-        chrome.storage.local.set({ savedCvPath: msg.filePath }, () => {
-            console.log("Chemin du CV sauvegardé:", msg.filePath);
+    if (msg.type === "SAVE_CV_AND_NAME") {
+        chrome.storage.local.set({ savedCvData: msg.cvData, savedCvType: msg.cvType, fullName: msg.fullName }, () => {
+            console.log("CV sauvegardé avec succès.", msg.cvData.length, "bytes");
+            console.log("Nom complet sauvegardé:", msg.fullName);
             sendResponse({ success: true });
         });
         
         return true;
     }    
+
+    if (msg.type === "GET_NAME") {
+        chrome.storage.local.get('fullName', (result) => {
+            sendResponse({ fullName: result.fullName });
+        });
+        return true; 
+    }
 });

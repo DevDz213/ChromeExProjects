@@ -15,11 +15,12 @@
       <label for="resumeFile">Upload Your CV (PDF only):</label>
       <input type="file" id="resumeFile" name="resumeFile" accept=".pdf" required />
     </div>
-    <button type="submit" id="askButton">Auto Apply</button>
+    <button type="submit" id="formSubmit">Save Application Info</button>
   </form>
+  <button id="askButton" disabled>Auto Apply</button>
   <h1>Applications done : </h1>
   <ul id="jobAppliedList"></ul>
-  <script src="../node_modules/jspdf/dist/jspdf.umd.min.js"></script>
+  <script src="../libs/jspdf.umd.min.js"></script>
   <script src="popup.js" type="module"></script>
 </body>
 </html>

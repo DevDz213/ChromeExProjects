@@ -69,7 +69,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             console.log("Message GET_ANSWER reçu");
             const rawAnswer = await getLastAnswer();
             console.log("Raw Answer :", rawAnswer);
-            const result = cutText(rawAnswer, "Madame, Monsieur,", "Arezki Oussad");
+            const result = cutText(rawAnswer, "Madame, Monsieur,", msg.fullName);
             console.log("Answer extracted:", result);
             sendResponse({ text : result });
         })();

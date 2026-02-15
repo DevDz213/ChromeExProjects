@@ -1,19 +1,16 @@
 {
-  "name": "Ask Chatgpt anything",
-  "description": "Google Extension that prompts current Chatgpt tab and collect the answer.",
+  "name": "Auto Application",
+  "description": "Edge extension that apply to jobs for you!",
   "version": "1.0",
   "permissions": ["tabs", "activeTab", "scripting", "downloads", "storage"],
   "manifest_version": 3,
-  "host_permissions": [
-    "https://chatgpt.com/c/*",
-    "file:///*"
-  ],
+  "host_permissions": [],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
   },
   "action": {
     "default_popup": "popup/popup.html",
-    "default_icon": {}
+    "default_icon": "Img/logo.png"
   },
   "background": {
     "service_worker": "background/background.js"

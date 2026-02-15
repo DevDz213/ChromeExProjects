@@ -7,3 +7,6 @@ node_modules/
 
 # Ignore les fichiers de configuration locaux
 .env
+
+# Ignore deployment folder, only for me
+deployment/

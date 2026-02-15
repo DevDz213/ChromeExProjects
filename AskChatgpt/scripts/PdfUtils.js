@@ -1,8 +1,16 @@
-export function generateCoverLetter(bodyText, jobTitle) {
+/**
+ * Utility function to generate a custom pdf and download it with Chrome.downloads API
+ *
+ * @export
+ * @param {string} bodyText 
+ * @param {string} jobTitle 
+ * @param {string} appliantName 
+ */
+export function generateCoverLetter(bodyText, jobTitle, appliantName) {
     const { jsPDF } = window.jspdf || window.jsPDF || {};
     if (!jsPDF) {
         console.log('jsPDF not found - ensure jspdf.umd.min.js is loaded before PdfUtils.js');
-        return;
+        return false;
     }
     // Paramètre dynamique pour le titre
     const poste = jobTitle;
@@ -39,16 +47,14 @@ export function generateCoverLetter(bodyText, jobTitle) {
     // Mise à jour de Y après le paragraphe
     currentY += lines.length * 5 + 3;
 
-    // ===== SIGNATURE =====
-    doc.text("Cordialement,", marginX, currentY);
-    currentY += 8;
-
+    // Mise à jour du font pour la signature
     doc.setFont("helvetica", "bold");
-    doc.text("Arezki Oussad", marginX, currentY);
+    doc.text(appliantName, marginX, currentY);
 
     // ===== SAUVEGARDE =====
     doc.save("lettre_motivation.pdf");
 
     console.log("PDF généré avec succès");
 
+    return true;
 }

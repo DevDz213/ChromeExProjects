@@ -40,7 +40,7 @@ async function injectCV() {
     console.log("Saved CV found:", response.filename);
 
     const blob = new Blob([new Uint8Array(response.data)], {type: 'application/pdf'});
-    const file = new File([blob], "CV.pdf", {type: 'application/pdf'});
+    const file = new File([blob], response.filename, {type: 'application/pdf'});
 
     const dt = new DataTransfer();
     dt.items.add(file);

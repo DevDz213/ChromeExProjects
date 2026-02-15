@@ -1,18 +1,30 @@
 import { generateCoverLetter } from "../scripts/PdfUtils.js";
 
-console.log("Popup script loaded");
+console.log("Popup script loaded v1");
 
 
-chrome.runtime.sendMessage({ 
-    type: "SAVE_CV_PATH", 
-    filePath: chrome.runtime.getURL("FCV_Arezki_Oussad.pdf")
-}, (response) => {
-    if (response && response.success) {
-        console.log("CV path saved successfully in background.");
-    } else {
-        console.log("Failed to save CV path in background.");
-    }
-});
+/**
+ * Save the CV infos and User full name in chrome.storage API (calls background.js)
+ *
+ * @async
+ * @param {File} cvFile 
+ * @param {string} fullName  
+ */
+async function saveCvAndName(cvFile, fullName) {
+    const arrayBuffer = await cvFile.arrayBuffer();
+    await chrome.runtime.sendMessage({ 
+        type: "SAVE_CV_AND_NAME", 
+        cvData: Array.from(new Uint8Array(arrayBuffer)),
+        cvType: cvFile.type,
+        fullName: fullName
+    }, (response) => {
+        if (response && response.success) {
+            console.log("CV path saved successfully in background.");
+        } else {
+            console.log("Failed to save CV path in background.");
+        }
+    });
+}
 
 
 function countWords(text) {
@@ -24,6 +36,11 @@ function countWords(text) {
 }
 
 
+/**
+ * Add the job title in popup UI to show user what he has applied for
+ *
+ * @param {string} title 
+ */
 function addSuccessFulApplication(title) {
     const countEl = document.getElementById("applicationCount");
     let count = parseInt(countEl.textContent) || 0;
@@ -37,7 +54,33 @@ function addSuccessFulApplication(title) {
 }
 
 
-document.addEventListener("DOMContentLoaded", () => {
+
+
+function handleFormSumbtion() {
+    const applyForm = document.getElementById("applyForm");
+    applyForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        applyForm.querySelector("button[type='submit']").disabled = true;
+        document.getElementById("askButton").disabled = false;
+
+        console.log("Apply form submitted");
+        const fullNameEl = document.getElementById("fullName");
+        const resumeEl = document.getElementById("resumeFile");
+        const fullName = fullNameEl ? fullNameEl.value.trim() : "";
+        const savedCv = resumeEl && resumeEl.files && resumeEl.files[0] ? resumeEl.files[0] : null;
+        console.log("Form submitted:", {
+            fullName,
+            file: savedCv ? { name: savedCv.name, size: savedCv.size, type: savedCv.type } : null,
+        });
+
+        saveCvAndName(savedCv, fullName);
+
+    });
+}
+
+
+function handleApplicationButtonClick() {
     const askButton = document.getElementById("askButton");
 
     askButton.addEventListener("click", async () => {
@@ -83,7 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // ALLER SUR ONGLET CHAT DÉJÀ OUVERT ET LUI BALANCER LE PROMPT
             const {employer, title, description, requirements} = jobData;
-            const prompt = `Rédige moi une lettre de motivation pour le poste suivant en te basant sur mon CV. Employeur: ${employer} Poste : ${title}. Description du poste : ${description}. Exigences du poste : ${requirements}. CV : [insérer le contenu du CV ici]. Lettre de motivation : Madame, Monsieur, [insérer le reste de la lettre ici] Arezki Oussad. Fais la très courte (environ 200 mots)`;
+            const { fullName } = await chrome.runtime.sendMessage({type: "GET_NAME"})
+            const prompt = `Rédige moi une lettre de motivation pour le poste suivant en te basant sur mon CV. Employeur: ${employer} Poste : ${title}. Description du poste : ${description}. Exigences du poste : ${requirements}. Lettre de motivation : Madame, Monsieur, [insérer le reste de la lettre ici] ${fullName}. Fais la courte (environ 200 mots)`;
             
             const [chatGptTab] = await chrome.tabs.query({ 
                 url: "https://chatgpt.com/*"
@@ -100,7 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const response = await chrome.tabs.sendMessage(chatGptTab.id, {
                 type: "PROMPT_CHATGPT",
-                prompt: prompt
+                prompt: prompt,
+                fullName: fullName
             });
 
             const wordCount = countWords(response.text);
@@ -113,9 +158,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            generateCoverLetter(response.text, title);
+            if(!generateCoverLetter(response.text, title, fullName)){
+                console.log("Error generating the pdf");
+                return;
+            }
 
-            console.log("Cover letter generated.");
+            console.log(`Cover letter generated for ${fullName}.`);
             
             console.log("Applying to job...");
 
@@ -131,4 +179,14 @@ document.addEventListener("DOMContentLoaded", () => {
             await chrome.tabs.remove(newTabId);
         }
     });
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+
+    handleFormSumbtion();
+
+    handleApplicationButtonClick();
+
 });
