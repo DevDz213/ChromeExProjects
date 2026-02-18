@@ -33,10 +33,11 @@ async function injectCV() {
     const response = await chrome.runtime.sendMessage({
         type: "GET_SAVED_CV"
     });
-    if (!response) {
+    if (!response.success) {
         console.log("Aucun CV retourné dans la page de stage.");
         return;
     }
+    
     console.log("Saved CV found:", response.filename);
 
     const blob = new Blob([new Uint8Array(response.data)], {type: 'application/pdf'});

@@ -41,34 +41,38 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 
     if (msg.type === "GET_SAVED_CV") {
-        chrome.storage.local.get("savedCvPath", async (result) => {
-            if (!result.savedCvPath) {
-                console.log("Aucun CV sauvegardé trouvé");
-                sendResponse(null);
-                return;
-            }
-
+        (async () =>{
             try {
-                const result = await chrome.storage.local.get(['savedCvData', 'savedCvType', 'fullName']);
+                const result = await chrome.storage.local.get(['savedCvData', 'savedCvType', 'savedCvName']);
                 
-                console.log("CV lu avec succès, envoi des données au content script.", { size: result.savedCvData.length });
-                
+                if (!result.savedCvData) {
+                    console.warn("Aucun CV trouvé dans le stockage local.");
+                    sendResponse({ success: false, error: "No data found" });
+                    return;
+                }
+
+                console.log("CV lu avec succès. Taille:", result.savedCvData.length);
                 sendResponse({
-                    filename: `CV_${result.fullName}.pdf`,
+                    success: true,
+                    filename: result.savedCvName,
                     data: result.savedCvData,
                     type: result.savedCvType
                 });
             } catch (error) {
                 console.error("Erreur lors de la lecture du CV:", error);
-                sendResponse(null);
+                sendResponse({ success: false, error: error.message });
             }
-        });
-        
+        })();
         return true;
     }
 
     if (msg.type === "SAVE_CV_AND_NAME") {
-        chrome.storage.local.set({ savedCvData: msg.cvData, savedCvType: msg.cvType, fullName: msg.fullName }, () => {
+        chrome.storage.local.set({ 
+            savedCvData: msg.cvData, 
+            savedCvType: msg.cvType, 
+            savedCvName: msg.cvName,
+            fullName: msg.fullName 
+        }, () => {
             console.log("CV sauvegardé avec succès.", msg.cvData.length, "bytes");
             console.log("Nom complet sauvegardé:", msg.fullName);
             sendResponse({ success: true });

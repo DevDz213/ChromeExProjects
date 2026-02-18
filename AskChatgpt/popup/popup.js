@@ -1,6 +1,46 @@
 import { generateCoverLetter } from "../scripts/PdfUtils.js";
 
-console.log("Popup script loaded v1");
+console.log("Popup script loaded v3");
+
+
+async function autoFillForm(){
+    const savedName = await chrome.runtime.sendMessage({
+        type: "GET_NAME"
+    })
+    console.log(savedName)
+    const savedCvData = await chrome.runtime.sendMessage({
+        type: "GET_SAVED_CV"
+    })
+
+    if(savedName.fullName){
+        const nameInput = document.getElementById("fullName")
+        nameInput.value = savedName.fullName;
+    }
+    if(savedCvData && savedCvData.success){
+        const fileInput = document.getElementById("resumeFile")
+        if (!savedCvData) return;
+        console.log(savedCvData);
+        try {
+            const blob = new Blob([new Uint8Array(savedCvData.data)], {type: savedCvData.type});
+
+            // 3. Create a new File object
+            const restoredFile = new File([blob], savedCvData.filename, { type: savedCvData.type });
+
+            // 4. Use DataTransfer to bypass the "read-only" restriction on .files
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(restoredFile);
+            
+            // 5. Assign the file list to the input
+            fileInput.files = dataTransfer.files;
+
+            // 6. Trigger a 'change' event so the website notices the file is there
+            fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+        } catch (err) {
+            console.error("Failed to reconstruct file:", err);
+        }
+    }
+}
 
 
 /**
@@ -16,6 +56,7 @@ async function saveCvAndName(cvFile, fullName) {
         type: "SAVE_CV_AND_NAME", 
         cvData: Array.from(new Uint8Array(arrayBuffer)),
         cvType: cvFile.type,
+        cvName: cvFile.name,
         fullName: fullName
     }, (response) => {
         if (response && response.success) {
@@ -184,6 +225,7 @@ function handleApplicationButtonClick() {
 
 document.addEventListener("DOMContentLoaded", () => {
 
+    autoFillForm();
 
     handleFormSumbtion();
 
